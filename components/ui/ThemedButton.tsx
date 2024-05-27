@@ -1,6 +1,7 @@
 import { Text, type TextProps, StyleSheet, Button, TouchableOpacity } from 'react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { ThemedText } from '../ThemedText';
 
 export type ThemedButtonProps = TextProps & {
     lightColor?: string;
@@ -38,7 +39,7 @@ export function ThemedButton({
             activeOpacity={disabled ? 1 : 0.7}
             onPress={disabled ? () => { } : onPress}
             {...rest}
-        ><Text style={{ color: disabled ? "#000000" : "#ffffff" }}>{title}</Text></TouchableOpacity>
+        ><ThemedText style={{ color: disabled ? "#000000" : "#ffffff" }}>{title}</ThemedText></TouchableOpacity>
     );
 }
 

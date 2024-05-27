@@ -37,7 +37,7 @@ export default function HomeScreen() {
 	return (
 		<ParallaxScrollView
 			headerBackgroundColor={{ light: Colors.light.accent1, dark: Colors.dark.accent1 }}
-			headerImage={<Ionicons size={310} name="heart-outline" style={{ ...Style.headerImage, color: Colors[colorScheme ?? 'light'].accent2 }} />}>
+			headerImage={<Ionicons size={310} name="flower-outline" style={{ ...Style.headerImage, color: Colors[colorScheme ?? 'light'].accent2 }} />}>
 			{/* {herbs && herbs.map((herb, index) => {
 				return <Text key={index}>{herb.name}</Text>
 			})} */}

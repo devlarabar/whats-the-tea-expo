@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
-import { Herb } from '@/types';
+import { ColorsDict, Herb, Recipe } from '@/types';
 import { Ailments } from '@/constants/Ailments';
 import { Ionicons } from '@expo/vector-icons';
 import Error from '@/components/ui/Error';
@@ -17,6 +17,7 @@ import { ThemedButton } from '@/components/ui/ThemedButton';
 
 export default function AilmentsScreen() {
     const colorScheme = useColorScheme();
+    const colors: ColorsDict = Colors[colorScheme ?? 'light']
 
     const [herbs, setHerbs] = useState<Herb[]>([])
     const [selectedAilments, setSelectedAilments] = useState<string[]>([])
@@ -58,18 +59,49 @@ export default function AilmentsScreen() {
             setErrorMessage("");
         }
     }
+    const saveGeneratedRecipe = async (recipe: Herb[]) => {
+        try {
+            // Convert the recipe array to a comma-separated string
+            const herbsString = recipe.map(herb => herb.name).join(",");
+
+            // Insert the new recipe into the Recipe table
+            const result = await db.runAsync(
+                `INSERT INTO Recipe (name, herbs, addons, is_favourite) VALUES (?, ?, ?, ?);`,
+                "", herbsString, "", 0
+            );
+
+            // Log the result for debugging
+            console.log('Inserted recipe with ID:', result.lastInsertRowId);
+            console.log('Number of rows affected:', result.changes);
+            const insertedRecipe = await db.getAllAsync(`SELECT * FROM Recipe WHERE id = ?;`, result.lastInsertRowId)
+            console.log(insertedRecipe)
+        } catch (error) {
+            console.error('Error inserting recipe:', error);
+        }
+    }
     const getRecipe = async (selectedAilments: string[]) => {
-        let query: string = `SELECT * FROM Herb WHERE`;
-        query += selectedAilments.map(a => ` uses LIKE '%${a}%'`).join(' OR ');
-        const recipeHerbs: Herb[] = await db.getAllAsync<Herb>(query);
-        setRecipe(recipeHerbs);
+        // let query: string = `SELECT * FROM Herb WHERE`;
+        // query += selectedAilments.map(a => ` uses LIKE '%${a}%'`).join(' OR ');
+        // const recipeHerbs: Herb[] = await db.getAllAsync<Herb>(query);
+        let recipeHerbs: Herb[] = []
+        for (let a of selectedAilments) {
+            let query: string = `SELECT * FROM Herb WHERE uses LIKE '%${a}%'`
+            const aHerbs: Herb[] = await db.getAllAsync<Herb>(query);
+            let rng = Math.floor(Math.random() * (aHerbs.length));
+            recipeHerbs.push(aHerbs[rng])
+        }
+        const uniqueHerbs = recipeHerbs.filter((herb, index, self) =>
+            index === self.findIndex((herbBeingChecked) => herbBeingChecked.name === herb.name)
+        );
+        saveGeneratedRecipe(uniqueHerbs);
+        setRecipe(uniqueHerbs);
     }
 
 
     return (
         <ParallaxScrollView
             headerBackgroundColor={{ light: Colors.light.accent1, dark: Colors.dark.accent1 }}
-            headerImage={<Ionicons size={310} name="heart-outline" style={{ ...Style.headerImage, color: Colors[colorScheme ?? 'light'].accent2 }} />}>
+            headerImage={<Ionicons size={310} name="heart-outline" style={{ ...Style.headerImage, color: colors.accent2 }} />}>
             <ThemedView style={styles.titleContainer}>
                 <ThemedText type="title">Spill the Tea</ThemedText>
             </ThemedView>
@@ -108,10 +140,20 @@ export default function AilmentsScreen() {
                                             removeSelectedAilment(ailmentName)
                                         }
                                     }}
-                                    style={selectedAilments.includes(ailmentName) ? styles.ailmentsListItemSelected : styles.ailmentsListItem}
+                                    style={
+                                        selectedAilments.includes(ailmentName)
+                                            ? { ...styles.ailmentsListItem, backgroundColor: colors.accent3, color: colors.text }
+                                            : { ...styles.ailmentsListItem, backgroundColor: colors.primary }
+                                    }
                                     key={index}
                                 >
-                                    <Ionicons size={15} name={selectedAilments.includes(ailmentName) ? "checkmark-circle-outline" : "ellipse-outline"} style={styles.selectButton} /> {ailmentName}
+                                    <Ionicons
+                                        size={15}
+                                        name={selectedAilments.includes(ailmentName)
+                                            ? "checkmark-circle-outline"
+                                            : "ellipse-outline"}
+                                        style={styles.selectButton}
+                                    /> {ailmentName}
                                 </ThemedText>
                             })}
                         </ThemedView>
@@ -123,9 +165,10 @@ export default function AilmentsScreen() {
                             />
                         </ThemedView>
                     </ThemedView>
-                )}
+                )
+            }
 
-        </ParallaxScrollView>
+        </ParallaxScrollView >
     );
 }
 
@@ -151,14 +194,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     ailmentsListItem: {
-        backgroundColor: "#AF4670",
         color: "#ffffff",
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 10,
-    },
-    ailmentsListItemSelected: {
-        backgroundColor: "#E3D2DE",
         paddingHorizontal: 12,
         paddingVertical: 8,
         borderRadius: 10,

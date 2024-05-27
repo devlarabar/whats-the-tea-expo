@@ -20,3 +20,16 @@ export interface Recipe {
     addons: string;
     is_favourite: boolean;
 }
+
+export interface ColorsDict {
+    text: string;
+    background: string;
+    tint: string;
+    icon: string;
+    tabIconDefault: string;
+    tabIconSelected: string;
+    primary: string;
+    accent1: string;
+    accent2: string;
+    accent3: string;
+}
