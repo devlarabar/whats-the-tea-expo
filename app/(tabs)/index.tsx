@@ -7,8 +7,14 @@ import { ThemedView } from '@/components/ThemedView';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { Herb } from '@/types';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { Ionicons } from '@expo/vector-icons';
+import Style from '@/components/ui/Style';
 
 export default function HomeScreen() {
+
+	const colorScheme = useColorScheme();
 
 	const [herbs, setHerbs] = useState<Herb[]>([])
 
@@ -30,13 +36,8 @@ export default function HomeScreen() {
 
 	return (
 		<ParallaxScrollView
-			headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-			headerImage={
-				<Image
-					source={require('@/assets/images/partial-react-logo.png')}
-					style={styles.reactLogo}
-				/>
-			}>
+			headerBackgroundColor={{ light: Colors.light.accent1, dark: Colors.dark.accent1 }}
+			headerImage={<Ionicons size={310} name="heart-outline" style={{ ...Style.headerImage, color: Colors[colorScheme ?? 'light'].accent2 }} />}>
 			{/* {herbs && herbs.map((herb, index) => {
 				return <Text key={index}>{herb.name}</Text>
 			})} */}
@@ -84,12 +85,5 @@ const styles = StyleSheet.create({
 	stepContainer: {
 		gap: 8,
 		marginBottom: 8,
-	},
-	reactLogo: {
-		height: 178,
-		width: 290,
-		bottom: 0,
-		left: 0,
-		position: 'absolute',
 	},
 });

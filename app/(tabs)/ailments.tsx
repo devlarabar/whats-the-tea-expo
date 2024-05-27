@@ -10,8 +10,13 @@ import { Herb } from '@/types';
 import { Ailments } from '@/constants/Ailments';
 import { Ionicons } from '@expo/vector-icons';
 import Error from '@/components/ui/Error';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from '@/constants/Colors';
+import Style from '@/components/ui/Style';
+import { ThemedButton } from '@/components/ui/ThemedButton';
 
 export default function AilmentsScreen() {
+    const colorScheme = useColorScheme();
 
     const [herbs, setHerbs] = useState<Herb[]>([])
     const [selectedAilments, setSelectedAilments] = useState<string[]>([])
@@ -63,8 +68,8 @@ export default function AilmentsScreen() {
 
     return (
         <ParallaxScrollView
-            headerBackgroundColor={{ light: '#FAE7F4', dark: '#DDABC2' }}
-            headerImage={<Ionicons size={310} name="heart-outline" style={styles.headerImage} />}>
+            headerBackgroundColor={{ light: Colors.light.accent1, dark: Colors.dark.accent1 }}
+            headerImage={<Ionicons size={310} name="heart-outline" style={{ ...Style.headerImage, color: Colors[colorScheme ?? 'light'].accent2 }} />}>
             <ThemedView style={styles.titleContainer}>
                 <ThemedText type="title">Spill the Tea</ThemedText>
             </ThemedView>
@@ -79,14 +84,12 @@ export default function AilmentsScreen() {
                         )
                     })}
                     <ThemedView>
-                        <Button
+                        <ThemedButton
                             title={"Start over"}
                             onPress={() => {
                                 setRecipe([])
                                 setSelectedAilments([])
-                            }}
-                            accessibilityLabel="Start over"
-                        />
+                            }} />
                     </ThemedView>
                 </ThemedView>
             ) :
@@ -113,10 +116,10 @@ export default function AilmentsScreen() {
                             })}
                         </ThemedView>
                         <ThemedView>
-                            <Button
+                            <ThemedButton
                                 title={"Get Recipe"}
                                 onPress={() => getRecipe(selectedAilments)}
-                                accessibilityLabel="Get recipe"
+                                disabled={selectedAilments.length > 0 ? false : true}
                             />
                         </ThemedView>
                     </ThemedView>
@@ -135,12 +138,6 @@ const styles = StyleSheet.create({
     stepContainer: {
         gap: 8,
         marginBottom: 8,
-    },
-    headerImage: {
-        color: "#AF4670",
-        bottom: -90,
-        left: -35,
-        position: "absolute",
     },
     selectButton: {
         flex: 1
