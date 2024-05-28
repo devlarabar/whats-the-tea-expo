@@ -11,6 +11,8 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
 import Style from '@/components/ui/Style';
+import { ExternalLink } from '@/components/ExternalLink';
+import { Collapsible } from '@/components/Collapsible';
 
 export default function HomeScreen() {
 
@@ -46,32 +48,49 @@ export default function HomeScreen() {
 				<HelloWave />
 			</ThemedView>
 			<ThemedView style={styles.stepContainer}>
-				<ThemedText type="subtitle">Step 1: Try it</ThemedText>
+				<ThemedText type="subtitle">Step 1: Select your ailments</ThemedText>
 				<ThemedText>
-					Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-					Press{' '}
-					<ThemedText type="defaultSemiBold">
-						{Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-					</ThemedText>{' '}
-					to open developer tools.
+					Head over to the <ThemedText type="defaultSemiBold">Ailments</ThemedText> tab to select what's troubling you.
 				</ThemedText>
 			</ThemedView>
 			<ThemedView style={styles.stepContainer}>
-				<ThemedText type="subtitle">Step 2: Explore</ThemedText>
+				<ThemedText type="subtitle">Step 2: Generate your recipe</ThemedText>
 				<ThemedText>
-					Tap the Explore tab to learn more about what's included in this starter app.
+					Click the <ThemedText type="defaultSemiBold">Get Recipe</ThemedText> button to generate an herbal tea recipe to help soothe your symptoms.
 				</ThemedText>
 			</ThemedView>
 			<ThemedView style={styles.stepContainer}>
-				<ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+				<ThemedText type="subtitle">Step 3: Save your favourites</ThemedText>
 				<ThemedText>
-					When you're ready, run{' '}
-					<ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-					<ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-					<ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-					<ThemedText type="defaultSemiBold">app-example</ThemedText>.
+					Every recipe you generate is saved in your local database. You can browse the list and save your favourites for easy access whenever you need them.
 				</ThemedText>
 			</ThemedView>
+			<Collapsible title="Light and dark mode components">
+				<ThemedText>
+					This template has light and dark mode support. The{' '}
+					<ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
+					what the user's current color scheme is, and so you can adjust UI colors accordingly.
+				</ThemedText>
+				<ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
+					<ThemedText type="link">Learn more</ThemedText>
+				</ExternalLink>
+			</Collapsible>
+			<Collapsible title="Animations">
+				<ThemedText>
+					This template includes an example of an animated component. The{' '}
+					<ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
+					the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText> library
+					to create a waving hand animation.
+				</ThemedText>
+				{Platform.select({
+					ios: (
+						<ThemedText>
+							The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
+							component provides a parallax effect for the header image.
+						</ThemedText>
+					),
+				})}
+			</Collapsible>
 		</ParallaxScrollView>
 	);
 }

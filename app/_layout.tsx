@@ -18,16 +18,16 @@ SplashScreen.preventAutoHideAsync();
 async function loadDatabase(): Promise<SQLite.SQLiteDatabase> {
 	if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'SQLite')).exists) {
 		await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite');
-	}
-	const asset = await Asset.fromModule(require("../assets/data/db.db")).downloadAsync();
-	if (!asset.localUri) {
-		throw new Error("Failed to download database asset.");
-	}
-	await FileSystem.copyAsync({
-		from: asset.localUri,
-		to: FileSystem.documentDirectory + 'SQLite/db.db',
-	});
 
+		const asset = await Asset.fromModule(require("../assets/data/db.db")).downloadAsync();
+		if (!asset.localUri) {
+			throw new Error("Failed to download database asset.");
+		}
+		await FileSystem.copyAsync({
+			from: asset.localUri,
+			to: FileSystem.documentDirectory + 'SQLite/db.db',
+		});
+	}
 	return SQLite.openDatabaseSync('db.db');
 }
 
